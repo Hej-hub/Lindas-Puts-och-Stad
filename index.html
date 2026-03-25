@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Lindas Puts och Städ</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --hot-pink: #FF2D78;
+      --bubblegum: #FF85B3;
+      --powder: #FFD6E7;
+      --blush: #FFF0F6;
+      --deep: #1A0010;
+      --muted: #8C4067;
+      --white: #FFFFFF;
+      --gold: #FFD700;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--blush);
+      color: var(--deep);
+      overflow-x: hidden;
+      cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='5' fill='%23FF2D78' opacity='0.7'/%3E%3C/svg%3E") 12 12, auto;
+    }
+
+    /* ──── NOISE OVERLAY ──── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* ──── NAV ──── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.2rem 4rem;
+      backdrop-filter: blur(16px);
+      background: rgba(255, 240, 246, 0.85);
+      border-bottom: 1px solid rgba(255, 45, 120, 0.15);
+      transition: box-shadow 0.3s;
+    }
+    nav:hover { box-shadow: 0 4px 32px rgba(255,45,120,0.1); }
+
+    .nav-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--hot-pink);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-decoration: none;
+    }
+    .nav-logo span { font-size: 1.6rem; }
+
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+      list-style: none;
+    }
+    .nav-links a {
+      text-decoration: none;
+      color: var(--muted);
+      font-weight: 500;
+      font-size: 0.9rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      position: relative;
+      transition: color 0.3s;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -3px; left: 0;
+      width: 0; height: 2px;
+      background: var(--hot-pink);
+      border-radius: 2px;
+      transition: width 0.3s;
+    }
+    .nav-links a:hover { color: var(--hot-pink); }
+    .nav-links a:hover::after { width: 100%; }
+
+    .nav-cta {
+      background: var(--hot-pink);
+      color: var(--white) !important;
+      padding: 0.55rem 1.4rem;
+      border-radius: 50px;
+      font-weight: 500 !important;
+      transition: transform 0.2s, box-shadow 0.2s !important;
+      box-shadow: 0 4px 14px rgba(255,45,120,0.35);
+    }
+    .nav-cta::after { display: none !important; }
+    .nav-cta:hover {
+      transform: translateY(-2px) !important;
+      box-shadow: 0 8px 24px rgba(255,45,120,0.45) !important;
+      color: var(--white) !important;
+    }
+
+    /* ──── HERO ──── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      padding: 8rem 4rem 4rem;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 70% 60% at 80% 20%, rgba(255,133,179,0.35) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 40% at 10% 80%, rgba(255,45,120,0.2) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 50% at 50% 50%, rgba(255,214,231,0.5) 0%, transparent 70%),
+        var(--blush);
+    }
+
+    /* Floating bubbles */
+    .bubble {
+      position: absolute;
+      border-radius: 50%;
+      opacity: 0.15;
+      animation: float linear infinite;
+    }
+    .bubble:nth-child(1) { width:180px; height:180px; background:var(--hot-pink); top:10%; left:5%; animation-duration:14s; }
+    .bubble:nth-child(2) { width:100px; height:100px; background:var(--bubblegum); top:60%; left:2%; animation-duration:10s; animation-delay:-3s; }
+    .bubble:nth-child(3) { width:250px; height:250px; background:var(--powder); top:5%; right:8%; animation-duration:18s; animation-delay:-6s; }
+    .bubble:nth-child(4) { width:60px; height:60px; background:var(--hot-pink); top:75%; right:15%; animation-duration:9s; animation-delay:-1s; }
+    .bubble:nth-child(5) { width:130px; height:130px; background:var(--bubblegum); top:40%; right:3%; animation-duration:12s; animation-delay:-4s; }
+
+    @keyframes float {
+      0%   { transform: translateY(0) rotate(0deg); }
+      50%  { transform: translateY(-30px) rotate(180deg); }
+      100% { transform: translateY(0) rotate(360deg); }
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 700px;
+      animation: slideUp 0.9s cubic-bezier(.16,1,.3,1) both;
+    }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(255,45,120,0.1);
+      border: 1px solid rgba(255,45,120,0.25);
+      color: var(--hot-pink);
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.4rem 1rem;
+      border-radius: 50px;
+      margin-bottom: 1.5rem;
+      animation: slideUp 0.9s 0.1s cubic-bezier(.16,1,.3,1) both;
+    }
+
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(3rem, 7vw, 5.5rem);
+      line-height: 1.05;
+      color: var(--deep);
+      margin-bottom: 1.2rem;
+      animation: slideUp 0.9s 0.2s cubic-bezier(.16,1,.3,1) both;
+    }
+    .hero h1 em {
+      font-style: italic;
+      color: var(--hot-pink);
+    }
+
+    .hero p {
+      font-size: 1.15rem;
+      color: var(--muted);
+      line-height: 1.7;
+      max-width: 520px;
+      margin-bottom: 2.5rem;
+      font-weight: 300;
+      animation: slideUp 0.9s 0.3s cubic-bezier(.16,1,.3,1) both;
+    }
+
+    .hero-buttons {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      animation: slideUp 0.9s 0.4s cubic-bezier(.16,1,.3,1) both;
+    }
+
+    .btn-primary {
+      background: var(--hot-pink);
+      color: var(--white);
+      padding: 0.9rem 2.2rem;
+      border-radius: 50px;
+      font-size: 1rem;
+      font-weight: 500;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      box-shadow: 0 6px 28px rgba(255,45,120,0.45);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .btn-primary:hover {
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 12px 40px rgba(255,45,120,0.55);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--hot-pink);
+      padding: 0.9rem 2.2rem;
+      border-radius: 50px;
+      font-size: 1rem;
+      font-weight: 500;
+      text-decoration: none;
+      border: 2px solid var(--hot-pink);
+      transition: background 0.2s, color 0.2s, transform 0.2s;
+    }
+    .btn-secondary:hover {
+      background: var(--hot-pink);
+      color: var(--white);
+      transform: translateY(-2px);
+    }
+
+    /* Hero floater card */
+    .hero-floater {
+      position: absolute;
+      right: 6%;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 3;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      animation: slideUp 1s 0.5s cubic-bezier(.16,1,.3,1) both;
+    }
+    .stat-card {
+      background: var(--white);
+      border-radius: 20px;
+      padding: 1.5rem 2rem;
+      box-shadow: 0 8px 40px rgba(255,45,120,0.12);
+      border: 1px solid rgba(255,45,120,0.08);
+      text-align: center;
+      transition: transform 0.3s;
+      min-width: 160px;
+    }
+    .stat-card:hover { transform: scale(1.04) rotate(-1deg); }
+    .stat-card .stat-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--hot-pink);
+      line-height: 1;
+    }
+    .stat-card .stat-label {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-top: 0.3rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .stat-card.accent {
+      background: var(--hot-pink);
+    }
+    .stat-card.accent .stat-num,
+    .stat-card.accent .stat-label { color: var(--white); }
+
+    /* ──── SERVICES ──── */
+    section { padding: 6rem 4rem; }
+
+    .section-tag {
+      display: inline-block;
+      color: var(--hot-pink);
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 0.8rem;
+    }
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      color: var(--deep);
+      margin-bottom: 1rem;
+      line-height: 1.1;
+    }
+    .section-sub {
+      font-size: 1rem;
+      color: var(--muted);
+      max-width: 480px;
+      line-height: 1.7;
+      font-weight: 300;
+    }
+
+    #tjanster { background: var(--white); }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+      margin-top: 3.5rem;
+    }
+
+    .service-card {
+      background: var(--blush);
+      border-radius: 24px;
+      padding: 2.5rem;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(255,45,120,0.1);
+      transition: transform 0.3s, box-shadow 0.3s;
+      cursor: default;
+    }
+    .service-card::before {
+      content: '';
+      position: absolute;
+      top: -40px; right: -40px;
+      width: 120px; height: 120px;
+      background: radial-gradient(circle, rgba(255,45,120,0.15), transparent 70%);
+      border-radius: 50%;
+      transition: transform 0.4s;
+    }
+    .service-card:hover { transform: translateY(-6px); box-shadow: 0 20px 50px rgba(255,45,120,0.15); }
+    .service-card:hover::before { transform: scale(1.5); }
+
+    .service-icon {
+      font-size: 2.5rem;
+      margin-bottom: 1.2rem;
+      display: block;
+    }
+    .service-card h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      color: var(--deep);
+      margin-bottom: 0.7rem;
+    }
+    .service-card p {
+      font-size: 0.93rem;
+      color: var(--muted);
+      line-height: 1.65;
+      font-weight: 300;
+    }
+    .service-card .tag {
+      display: inline-block;
+      margin-top: 1.2rem;
+      background: var(--hot-pink);
+      color: var(--white);
+      font-size: 0.75rem;
+      font-weight: 500;
+      padding: 0.3rem 0.9rem;
+      border-radius: 50px;
+    }
+
+    /* ──── WHY US ──── */
+    #varfor {
+      background: var(--deep);
+      color: var(--white);
+      position: relative;
+      overflow: hidden;
+    }
+    #varfor::before {
+      content: '';
+      position: absolute;
+      top: -100px; left: -100px;
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(255,45,120,0.2), transparent 70%);
+      pointer-events: none;
+    }
+    #varfor::after {
+      content: '';
+      position: absolute;
+      bottom: -80px; right: -80px;
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(255,133,179,0.15), transparent 70%);
+      pointer-events: none;
+    }
+    #varfor .section-title { color: var(--white); }
+    #varfor .section-sub { color: rgba(255,255,255,0.55); }
+
+    .why-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 2rem;
+      margin-top: 3.5rem;
+      position: relative;
+      z-index: 1;
+    }
+    .why-item {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,45,120,0.2);
+      border-radius: 20px;
+      padding: 2rem;
+      transition: background 0.3s, transform 0.3s;
+    }
+    .why-item:hover {
+      background: rgba(255,45,120,0.1);
+      transform: translateY(-4px);
+    }
+    .why-item .icon { font-size: 2rem; margin-bottom: 1rem; }
+    .why-item h4 { font-size: 1.05rem; font-weight: 500; margin-bottom: 0.5rem; color: var(--white); }
+    .why-item p { font-size: 0.88rem; color: rgba(255,255,255,0.5); line-height: 1.6; font-weight: 300; }
+
+    /* ──── TESTIMONIALS ──── */
+    #recensioner { background: var(--powder); }
+
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.8rem;
+      margin-top: 3.5rem;
+    }
+    .testimonial {
+      background: var(--white);
+      border-radius: 24px;
+      padding: 2.2rem;
+      box-shadow: 0 4px 24px rgba(255,45,120,0.06);
+      border: 1px solid rgba(255,45,120,0.08);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .testimonial:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(255,45,120,0.13); }
+    .stars { color: var(--hot-pink); font-size: 1.1rem; letter-spacing: 2px; margin-bottom: 1rem; }
+    .testimonial blockquote {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 1.05rem;
+      color: var(--deep);
+      line-height: 1.6;
+      margin-bottom: 1.4rem;
+    }
+    .reviewer {
+      display: flex;
+      align-items: center;
+      gap: 0.9rem;
+    }
+    .reviewer-avatar {
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      background: var(--powder);
+    }
+    .reviewer-info .name { font-weight: 500; font-size: 0.9rem; color: var(--deep); }
+    .reviewer-info .place { font-size: 0.78rem; color: var(--muted); font-weight: 300; }
+
+    /* ──── PRICING ──── */
+    #priser { background: var(--blush); }
+
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 2rem;
+      margin-top: 3.5rem;
+      align-items: start;
+    }
+    .price-card {
+      background: var(--white);
+      border-radius: 28px;
+      padding: 2.5rem 2rem;
+      border: 2px solid rgba(255,45,120,0.1);
+      text-align: center;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .price-card:hover { transform: translateY(-6px); box-shadow: 0 16px 48px rgba(255,45,120,0.12); }
+    .price-card.featured {
+      background: var(--hot-pink);
+      border-color: transparent;
+      color: var(--white);
+      transform: scale(1.04);
+      box-shadow: 0 20px 60px rgba(255,45,120,0.4);
+    }
+    .price-card.featured:hover { transform: scale(1.04) translateY(-6px); }
+    .price-card.featured h3,
+    .price-card.featured .price-amount,
+    .price-card.featured .price-sub,
+    .price-card.featured ul li { color: var(--white); }
+    .price-label {
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.5rem;
+    }
+    .price-card.featured .price-label { color: rgba(255,255,255,0.7); }
+    .price-card h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.6rem;
+      color: var(--deep);
+      margin-bottom: 1rem;
+    }
+    .price-amount {
+      font-family: 'Playfair Display', serif;
+      font-size: 3rem;
+      font-weight: 700;
+      color: var(--hot-pink);
+      line-height: 1;
+    }
+    .price-card.featured .price-amount { color: var(--white); }
+    .price-sub {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-top: 0.3rem;
+      margin-bottom: 1.8rem;
+      font-weight: 300;
+    }
+    .price-card ul {
+      list-style: none;
+      text-align: left;
+      margin-bottom: 2rem;
+    }
+    .price-card ul li {
+      font-size: 0.9rem;
+      color: var(--muted);
+      padding: 0.4rem 0;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .price-card ul li::before { content: '✓'; color: var(--hot-pink); font-weight: 700; }
+    .price-card.featured ul li::before { color: rgba(255,255,255,0.85); }
+    .price-btn {
+      display: block;
+      text-align: center;
+      padding: 0.85rem;
+      border-radius: 50px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      text-decoration: none;
+      background: var(--hot-pink);
+      color: var(--white);
+      box-shadow: 0 4px 18px rgba(255,45,120,0.3);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .price-card.featured .price-btn {
+      background: var(--white);
+      color: var(--hot-pink);
+      box-shadow: 0 4px 18px rgba(0,0,0,0.1);
+    }
+    .price-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(255,45,120,0.4); }
+
+    /* ──── CONTACT ──── */
+    #kontakt {
+      background: var(--white);
+    }
+    .contact-wrapper {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: start;
+      margin-top: 3.5rem;
+    }
+    .contact-info p { color: var(--muted); font-weight: 300; line-height: 1.7; margin-bottom: 2rem; }
+    .contact-detail {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.2rem;
+    }
+    .contact-detail .ico {
+      width: 44px; height: 44px;
+      background: var(--powder);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+    .contact-detail span { font-size: 0.93rem; color: var(--deep); font-weight: 400; }
+
+    .contact-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+    .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
+    .form-group label {
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      padding: 0.9rem 1.2rem;
+      border-radius: 14px;
+      border: 1.5px solid rgba(255,45,120,0.15);
+      background: var(--blush);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      color: var(--deep);
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      resize: none;
+    }
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+      border-color: var(--hot-pink);
+      box-shadow: 0 0 0 3px rgba(255,45,120,0.1);
+    }
+    .form-group textarea { height: 120px; }
+    .form-submit {
+      background: var(--hot-pink);
+      color: var(--white);
+      border: none;
+      padding: 1rem 2.5rem;
+      border-radius: 50px;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      box-shadow: 0 6px 24px rgba(255,45,120,0.4);
+      transition: transform 0.2s, box-shadow 0.2s;
+      font-family: 'DM Sans', sans-serif;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      align-self: flex-start;
+    }
+    .form-submit:hover { transform: translateY(-2px); box-shadow: 0 10px 32px rgba(255,45,120,0.5); }
+    .form-submit:active { transform: scale(0.98); }
+
+    /* ──── FOOTER ──── */
+    footer {
+      background: var(--deep);
+      color: rgba(255,255,255,0.55);
+      padding: 3rem 4rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .footer-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      color: var(--white);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    footer p { font-size: 0.83rem; font-weight: 300; }
+    .footer-links { display: flex; gap: 1.5rem; }
+    .footer-links a {
+      color: rgba(255,255,255,0.4);
+      text-decoration: none;
+      font-size: 0.83rem;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--bubblegum); }
+
+    /* ──── SCROLL ANIMATIONS ──── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.7s cubic-bezier(.16,1,.3,1), transform 0.7s cubic-bezier(.16,1,.3,1);
+    }
+    .reveal.visible { opacity: 1; transform: none; }
+
+    /* ──── STICKY BUBBLE ──── */
+    .sticky-phone {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      z-index: 200;
+      background: var(--hot-pink);
+      color: var(--white);
+      width: 60px; height: 60px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      box-shadow: 0 6px 28px rgba(255,45,120,0.5);
+      text-decoration: none;
+      animation: pulse 2.5s infinite;
+      transition: transform 0.2s;
+    }
+    .sticky-phone:hover { transform: scale(1.12); }
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 6px 28px rgba(255,45,120,0.5); }
+      50% { box-shadow: 0 6px 48px rgba(255,45,120,0.8); }
+    }
+
+    /* ──── RESPONSIVE ──── */
+    @media (max-width: 900px) {
+      nav { padding: 1rem 2rem; }
+      .nav-links { display: none; }
+      .hero { padding: 7rem 2rem 3rem; }
+      .hero-floater { display: none; }
+      section { padding: 4rem 2rem; }
+      .contact-wrapper { grid-template-columns: 1fr; gap: 2.5rem; }
+      footer { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo"><span>🌸</span> Lindas Puts och Städ</a>
+  <ul class="nav-links">
+    <li><a href="#tjanster">Tjänster</a></li>
+    <li><a href="#varfor">Om oss</a></li>
+    <li><a href="#recensioner">Recensioner</a></li>
+    <li><a href="#priser">Priser</a></li>
+    <li><a href="#kontakt" class="nav-cta">Boka nu</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="hem">
+  <div class="hero-bg">
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+  </div>
+  <div class="hero-content">
+    <div class="hero-badge">✨ Husets bästa vän sedan 2015</div>
+    <h1>Städning med<br/><em>kärlek & stil</em></h1>
+    <p>Vi tar hand om ditt hem så att du kan njuta av livet. Professionell, pålitlig och alltid med ett leende — det är löftet från Lindas Puts och Städ.</p>
+    <div class="hero-buttons">
+      <a href="#kontakt" class="btn-primary">Boka gratis offert 🌸</a>
+      <a href="#tjanster" class="btn-secondary">Se våra tjänster</a>
+    </div>
+  </div>
+  <div class="hero-floater">
+    <div class="stat-card">
+      <div class="stat-num">500+</div>
+      <div class="stat-label">Nöjda kunder</div>
+    </div>
+    <div class="stat-card accent">
+      <div class="stat-num">⭐ 4.9</div>
+      <div class="stat-label">Genomsnittligt betyg</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">10 år</div>
+      <div class="stat-label">I branschen</div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section id="tjanster">
+  <div class="reveal">
+    <span class="section-tag">✦ Vad vi erbjuder</span>
+    <h2 class="section-title">Tjänster som<br/>gör skillnad</h2>
+    <p class="section-sub">Oavsett om det är en snabb städning eller ett djupt rengöringsprojekt — vi levererar alltid toppkvalitet.</p>
+  </div>
+  <div class="services-grid">
+    <div class="service-card reveal">
+      <span class="service-icon">🏠</span>
+      <h3>Hemstädning</h3>
+      <p>Regelbunden städning av ditt hem på dina villkor. Veckovis, varannan vecka eller månadsvis — du bestämmer!</p>
+      <span class="tag">Populärast</span>
+    </div>
+    <div class="service-card reveal">
+      <span class="service-icon">✨</span>
+      <h3>Storstädning</h3>
+      <p>En grundlig städning från golv till tak. Perfekt inför flytt, fest eller när man bara vill ha ett fräscht hem igen.</p>
+      <span class="tag">Rekommenderas</span>
+    </div>
+    <div class="service-card reveal">
+      <span class="service-icon">🪟</span>
+      <h3>Fönsterputs</h3>
+      <p>Kristallklara fönster som låter solljuset strömma in. Inomhus, utomhus eller båda — vi fixar det!</p>
+      <span class="tag">Nyhet</span>
+    </div>
+    <div class="service-card reveal">
+      <span class="service-icon">🏢</span>
+      <h3>Kontorsstädning</h3>
+      <p>En ren arbetsplats skapar bättre trivsel och produktivitet. Vi städar när ni inte är där!</p>
+      <span class="tag">Företag</span>
+    </div>
+    <div class="service-card reveal">
+      <span class="service-icon">🚚</span>
+      <h3>Flyttstädning</h3>
+      <p>Stress-fritt in- och utflyttning. Vi ser till att du får tillbaka din deposition och ditt lugn.</p>
+      <span class="tag">Garanti</span>
+    </div>
+    <div class="service-card reveal">
+      <span class="service-icon">🌿</span>
+      <h3>Miljövänlig städning</h3>
+      <p>Gröna rengöringsmedel som är snälla mot din familj, ditt husdjur och vår planet.</p>
+      <span class="tag">Eko</span>
+    </div>
+  </div>
+</section>
+
+<!-- WHY US -->
+<section id="varfor">
+  <span class="section-tag" style="color: var(--bubblegum);">✦ Varför välja oss</span>
+  <h2 class="section-title">Vi är inte vilka städare<br/><em style="font-style:italic; color: var(--bubblegum);">som helst</em></h2>
+  <p class="section-sub">Linda startade företaget 2015 med en enkel vision: ärlighet, noggrannhet och ett leende med på köpet. Det lever vi efter varje dag.</p>
+  <div class="why-grid">
+    <div class="why-item reveal">
+      <div class="icon">🔐</div>
+      <h4>Fullt försäkrade</h4>
+      <p>Alla våra städare är noga utvalda, bakgrundskontrollerade och fullt försäkrade.</p>
+    </div>
+    <div class="why-item reveal">
+      <div class="icon">⏰</div>
+      <h4>Alltid i tid</h4>
+      <p>Vi respekterar din tid. Om vi är sena kompenserar vi med rabatt — löfte!</p>
+    </div>
+    <div class="why-item reveal">
+      <div class="icon">💬</div>
+      <h4>Enkel kommunikation</h4>
+      <p>Boka, avboka och kommunicera enkelt via SMS, telefon eller e-post.</p>
+    </div>
+    <div class="why-item reveal">
+      <div class="icon">🌸</div>
+      <h4>Med hjärtat</h4>
+      <p>Vi städar ditt hem som om det vore vårt eget. Kärlek i varje rörelse.</p>
+    </div>
+    <div class="why-item reveal">
+      <div class="icon">✅</div>
+      <h4>Nöjd-kund-garanti</h4>
+      <p>Inte nöjd? Vi kommer tillbaka kostnadsfritt och gör om — inga frågor ställda.</p>
+    </div>
+    <div class="why-item reveal">
+      <div class="icon">🇸🇪</div>
+      <h4>Lokalt & personligt</h4>
+      <p>Vi är ett litet lokalt företag som verkligen bryr oss om varje kund.</p>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="recensioner">
+  <div class="reveal">
+    <span class="section-tag">✦ Vad kunderna säger</span>
+    <h2 class="section-title">Rena ord från<br/>glada hem</h2>
+    <p class="section-sub">Vi låter våra kunder tala för sig själva — och de har mycket fint att säga!</p>
+  </div>
+  <div class="testimonials-grid">
+    <div class="testimonial reveal">
+      <div class="stars">★★★★★</div>
+      <blockquote>"Jag visste inte att mitt hem kunde vara SÅ rent! Linda och hennes team är helt fantastiska. Rekommenderar varmt!"</blockquote>
+      <div class="reviewer">
+        <div class="reviewer-avatar">🌺</div>
+        <div class="reviewer-info">
+          <div class="name">Maria Lindgren</div>
+          <div class="place">Huddinge</div>
+        </div>
+      </div>
+    </div>
+    <div class="testimonial reveal">
+      <div class="stars">★★★★★</div>
+      <blockquote>"Bästa flyttputs jag haft. Fick tillbaka hela depositionen och hyrsvärden var mäkta imponerad. Tack Linda!"</blockquote>
+      <div class="reviewer">
+        <div class="reviewer-avatar">🌷</div>
+        <div class="reviewer-info">
+          <div class="name">Johan Eriksson</div>
+          <div class="place">Stockholm</div>
+        </div>
+      </div>
+    </div>
+    <div class="testimonial reveal">
+      <div class="stars">★★★★★</div>
+      <blockquote>"Anlitar dem varje vecka. Pålitliga, noggranna och alltid trevliga. Mitt liv har blivit så mycket enklare!"</blockquote>
+      <div class="reviewer">
+        <div class="reviewer-avatar">💐</div>
+        <div class="reviewer-info">
+          <div class="name">Sara Bergström</div>
+          <div class="place">Södertälje</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="priser">
+  <div class="reveal">
+    <span class="section-tag">✦ Priser</span>
+    <h2 class="section-title">Rent hem,<br/>rent samvete</h2>
+    <p class="section-sub">Transparenta priser utan dolda avgifter. RUT-avdrag ingår alltid!</p>
+  </div>
+  <div class="pricing-grid">
+    <div class="price-card reveal">
+      <div class="price-label">Basic</div>
+      <h3>Lättputt</h3>
+      <div class="price-amount">299<span style="font-size:1.2rem">kr</span></div>
+      <div class="price-sub">per tillfälle (efter RUT)</div>
+      <ul>
+        <li>Dammsugning & moppning</li>
+        <li>Kök & toalett</li>
+        <li>Upp till 60 m²</li>
+        <li>2 timmar</li>
+      </ul>
+      <a href="#kontakt" class="price-btn">Kom igång</a>
+    </div>
+    <div class="price-card featured reveal">
+      <div class="price-label">Mest populärt 🌸</div>
+      <h3>Stjärnstäd</h3>
+      <div class="price-amount">549<span style="font-size:1.2rem">kr</span></div>
+      <div class="price-sub">per tillfälle (efter RUT)</div>
+      <ul>
+        <li>Allt i Basic</li>
+        <li>Fönsterputs (insida)</li>
+        <li>Kylskåp & ugn</li>
+        <li>Upp till 100 m²</li>
+        <li>4 timmar</li>
+      </ul>
+      <a href="#kontakt" class="price-btn">Välj Stjärnstäd</a>
+    </div>
+    <div class="price-card reveal">
+      <div class="price-label">Premium</div>
+      <h3>Lyxputt</h3>
+      <div class="price-amount">899<span style="font-size:1.2rem">kr</span></div>
+      <div class="price-sub">per tillfälle (efter RUT)</div>
+      <ul>
+        <li>Allt i Stjärnstäd</li>
+        <li>Fönsterputs ut & in</li>
+        <li>Garderober & förråd</li>
+        <li>Obegränsad yta</li>
+        <li>Heldags städning</li>
+      </ul>
+      <a href="#kontakt" class="price-btn">Boka Lyxputt</a>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="kontakt">
+  <div class="reveal">
+    <span class="section-tag">✦ Kontakta oss</span>
+    <h2 class="section-title">Redo för ett<br/>skinande hem?</h2>
+  </div>
+  <div class="contact-wrapper">
+    <div class="contact-info reveal">
+      <p>Fyll i formuläret så hör vi av oss inom 24 timmar med ett skräddarsytt erbjudande. Eller kontakta oss direkt!</p>
+      <div class="contact-detail">
+        <div class="ico">📞</div>
+        <span>+46 70 123 45 67</span>
+      </div>
+      <div class="contact-detail">
+        <div class="ico">📧</div>
+        <span>linda@lindasputs.se</span>
+      </div>
+      <div class="contact-detail">
+        <div class="ico">📍</div>
+        <span>Huddinge & omnejd</span>
+      </div>
+      <div class="contact-detail">
+        <div class="ico">⏰</div>
+        <span>Mån–Fre 07:00–18:00</span>
+      </div>
+    </div>
+    <form class="contact-form reveal" onsubmit="handleSubmit(event)">
+      <div class="form-group">
+        <label>Ditt namn</label>
+        <input type="text" placeholder="Anna Svensson" required />
+      </div>
+      <div class="form-group">
+        <label>E-post</label>
+        <input type="email" placeholder="anna@exempel.se" required />
+      </div>
+      <div class="form-group">
+        <label>Telefon</label>
+        <input type="tel" placeholder="+46 70 000 00 00" />
+      </div>
+      <div class="form-group">
+        <label>Tjänst</label>
+        <select>
+          <option>Hemstädning</option>
+          <option>Storstädning</option>
+          <option>Fönsterputs</option>
+          <option>Flyttstädning</option>
+          <option>Kontorsstädning</option>
+          <option>Annan tjänst</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Meddelande</label>
+        <textarea placeholder="Berätta mer om vad du behöver hjälp med..."></textarea>
+      </div>
+      <button type="submit" class="form-submit">Skicka förfrågan 🌸</button>
+    </form>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">🌸 Lindas Puts och Städ</div>
+  <p>© 2025 Lindas Puts och Städ · Org.nr 556XXX-XXXX</p>
+  <div class="footer-links">
+    <a href="#">Integritetspolicy</a>
+    <a href="#">Villkor</a>
+    <a href="#">Instagram</a>
+  </div>
+</footer>
+
+<!-- STICKY PHONE BUTTON -->
+<a href="tel:+46701234567" class="sticky-phone" title="Ring oss">📞</a>
+
+<script>
+  // ── Scroll reveal ──
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 80);
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  reveals.forEach(el => observer.observe(el));
+
+  // ── Form submit ──
+  function handleSubmit(e) {
+    e.preventDefault();
+    const btn = e.target.querySelector('.form-submit');
+    btn.textContent = '✅ Skickat! Vi hör av oss snart';
+    btn.style.background = '#2D8B4E';
+    btn.style.boxShadow = '0 6px 24px rgba(45,139,78,0.4)';
+    btn.disabled = true;
+  }
+
+  // ── Nav shadow on scroll ──
+  window.addEventListener('scroll', () => {
+    const nav = document.querySelector('nav');
+    nav.style.boxShadow = window.scrollY > 30 ? '0 4px 32px rgba(255,45,120,0.12)' : 'none';
+  });
+</script>
+</body>
+</html>
